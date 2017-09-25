@@ -9,8 +9,20 @@ default: go
 
 include SuiteSparse_config/SuiteSparse_config.mk
 
+msvc:
+	( cd AMD && python ../makefile2wrappers.py makefile2wrappers.txt )
+	( cd BTF && python ../makefile2wrappers.py makefile2wrappers.txt )
+	( cd CAMD && python ../makefile2wrappers.py makefile2wrappers.txt )
+	( cd CCOLAMD && python ../makefile2wrappers.py makefile2wrappers.txt )
+	( cd COLAMD && python ../makefile2wrappers.py makefile2wrappers.txt )
+	( cd CHOLMOD && python ../makefile2wrappers.py makefile2wrappers.txt )
+	( cd CXSparse && python ../makefile2wrappers.py makefile2wrappers.txt )
+	( cd LDL && python ../makefile2wrappers.py makefile2wrappers.txt )
+	( cd KLU && python ../makefile2wrappers.py makefile2wrappers.txt )
+	( cd UMFPACK && python ../makefile2wrappers.py makefile2wrappers.txt )
+
 # Compile the default rules for each package
-go: metis
+go: 
 	( cd SuiteSparse_config && $(MAKE) )
 	( cd AMD && $(MAKE) )
 	( cd BTF && $(MAKE) )
@@ -34,7 +46,7 @@ endif
 
 # install all packages in /usr/local/lib and /usr/local/include
 # (note that CSparse is not installed; CXSparse is installed instead)
-install: metis
+install: metisinstall
 	( cd SuiteSparse_config && $(MAKE) install )
 	( cd AMD && $(MAKE) install )
 	( cd BTF && $(MAKE) install )
@@ -56,8 +68,13 @@ endif
 #	( cd SKYLINE_SVD && $(MAKE) install )
 	$(CP) README.txt $(INSTALL_DOC)/SuiteSparse_README.txt
 	chmod 644 $(INSTALL_DOC)/SuiteSparse_README.txt
+
+metisinstall: metis
 ifeq (,$(MY_METIS_LIB))
         # install METIS from SuiteSparse/metis-5.1.0
+	@mkdir -p $(INSTALL_LIB)
+	@mkdir -p $(INSTALL_INCLUDE)
+	@mkdir -p $(INSTALL_DOC)
 	- $(CP) lib/libmetis.* $(INSTALL_LIB)
 	- $(CP) metis-5.1.0/manual/manual.pdf $(INSTALL_DOC)/METIS_manual.pdf
 	- $(CP) metis-5.1.0/README.txt $(INSTALL_DOC)/METIS_README.txt
@@ -101,6 +118,7 @@ ifeq (,$(MY_METIS_LIB))
 endif
 	$(RM) -r $(INSTALL_DOC)
 
+# compile the dynamic libraries
 library: metis
 	( cd SuiteSparse_config && $(MAKE) )
 	( cd AMD && $(MAKE) library )
@@ -122,6 +140,29 @@ endif
 	( cd SPQR && $(MAKE) library )
 #	( cd PIRO_BAND && $(MAKE) library )
 #	( cd SKYLINE_SVD && $(MAKE) library )
+
+# compile the static libraries (except for metis, which is only dynamic)
+static: metis
+	( cd SuiteSparse_config && $(MAKE) static )
+	( cd AMD && $(MAKE) static )
+	( cd BTF && $(MAKE) static )
+	( cd CAMD && $(MAKE) static )
+	( cd CCOLAMD && $(MAKE) static )
+	( cd COLAMD && $(MAKE) static )
+	( cd CHOLMOD && $(MAKE) static )
+	( cd KLU && $(MAKE) static )
+	( cd LDL && $(MAKE) static )
+	( cd UMFPACK && $(MAKE) static )
+	( cd CSparse && $(MAKE) static )
+	( cd CXSparse && $(MAKE) static )
+	( cd RBio && $(MAKE) static )
+ifneq (,$(GPU_CONFIG))
+	( cd SuiteSparse_GPURuntime && $(MAKE) static )
+	( cd GPUQREngine && $(MAKE) static )
+endif
+	( cd SPQR && $(MAKE) static )
+#	( cd PIRO_BAND && $(MAKE) static )
+#	( cd SKYLINE_SVD && $(MAKE) static )
 
 # Remove all files not in the original distribution
 purge:

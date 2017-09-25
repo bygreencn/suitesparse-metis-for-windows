@@ -1,6 +1,6 @@
 SuiteSparse:  A Suite of Sparse matrix packages at http://www.suitesparse.com
 
-Feb 1, 2016.  SuiteSparse VERSION 4.5.1
+Mar 30, 2017.  SuiteSparse VERSION 4.5.5
 
 ------------------
 SuiteSparse/README
@@ -56,7 +56,7 @@ Packages in SuiteSparse, and files in this directory:
     CXSparse_newfiles
                 Files unique to CXSparse
 
-    doc         'make' places documentation for each package here
+    share       'make' places documentation for each package here
 
     GPUQREngine GPU support package for SPQR (not built into MATLAB, however)
 
@@ -76,11 +76,11 @@ Packages in SuiteSparse, and files in this directory:
                 make uninstall  undoes 'make install'
                 make library    compiles SuiteSparse libraries (not demos)
                 make distclean  removes all files not in distribution, including
-                                ./bin, ./doc, ./lib, and ./include.
+                                ./bin, ./share, ./lib, and ./include.
                 make purge      same as 'make distclean'
                 make clean      removes all files not in distribution, but
                                 keeps compiled libraries and demoes, ./lib,
-                                ./doc, and ./include.
+                                ./share, and ./include.
                 make config     displays parameter settings; does not compile
 
                 Each individual package also has each of the above 'make'
@@ -167,6 +167,36 @@ Refer to each package for license, copyright, and author information.  All
 codes are authored or co-authored by Timothy A. Davis.
 email: davis@tamu.edu
 
+Licenses for each package are located in the following files, all in
+PACKAGENAME/Doc/License.txt:
+
+    AMD/Doc/License.txt
+    BTF/Doc/License.txt
+    CAMD/Doc/License.txt
+    CCOLAMD/Doc/License.txt
+    CHOLMOD/Doc/License.txt
+    COLAMD/Doc/License.txt
+    CSparse/Doc/License.txt
+    CXSparse/Doc/License.txt
+    GPUQREngine/Doc/License.txt
+    KLU/Doc/License.txt
+    LDL/Doc/License.txt
+    MATLAB_Tools/Doc/License.txt
+    RBio/Doc/License.txt
+    SPQR/Doc/License.txt
+    SuiteSparse_GPURuntime/Doc/License.txt
+    UFget/Doc/License.txt
+    UMFPACK/Doc/License.txt
+
+These files are also present, but they are simply copies of the above license
+files for CXSparse and UFget:
+
+    CXSparse_newfiles/Doc/License.txt
+    CSparse/MATLAB/UFget/Doc/License.txt
+    CXSparse/MATLAB/UFget/Doc/License.txt
+
+METIS 5.0.1 is distributed with SuiteSparse, and is Copyright (c)
+by George Karypis.  Please refer to that package for its License.
 
 ================================================================================
 QUICK START FOR MATLAB USERS (Linux, Mac, or Windows):  uncompress the
@@ -181,13 +211,28 @@ will be run.  To run a (long!) exhaustive test, do SuiteSparse_test.
 QUICK START FOR THE C/C++ LIBRARIES:  Just type 'make' in this directory.  All
 libraries will be created and copied into SuiteSparse/lib.  All include files
 need by the applications that use SuiteSparse are copied into
-SuiteSparse/include.   All user documenation is copied into SuiteSparse/doc.
+SuiteSparse/include.   All user documenation is copied into
+SuiteSparse/share/doc.
+
+When compiling the libraries, do NOT use the INSTALL=... options for
+installing. Just do:
+
+    make
+
+or to compile just the libraries without running the demos, do:
+
+    make library
+
 Any program that uses SuiteSparse can thus use a simpler rule as compared to
 earlier versions of SuiteSparse.  If you add /home/myself/SuiteSparse/lib to
 your library search patch, you can do the following (for example):
 
     S = /home/myself/SuiteSparse
     cc myprogram.c -I$(S)/include -lumfpack -lamd -lcholmod -lsuitesparseconfig -lm
+
+Now you can install the libraries, if you wish, in a location other than
+SuiteSparse/lib, SuiteSparse/include, and SuiteSparse/share/doc, using
+'make install INSTALL=...'
 
 Do 'make install' if you want to install the libraries and include files in
 SuiteSparse/lib and SuiteSparse/include, and the documentation in
